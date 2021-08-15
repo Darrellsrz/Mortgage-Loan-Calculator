@@ -61,7 +61,7 @@ Through [Github](https://github.com/Darrellsrz/Mortgage-Loan-Calculator) :
 
 >   ![image](https://user-images.githubusercontent.com/88546228/129464667-800ad517-e96f-42c8-bd21-8e7e1749994b.png)
 
-4. After you press the calculate button, an excel button will also be output.If you want to export the table to excel file 
+4. After you press the calculate button, an excel button will also be output.If you want to export the table to **excel file** 
 > press it
 
 ![image](https://user-images.githubusercontent.com/88546228/129464717-0a3b5aaf-5f67-4b67-bc3b-0eaa3e8947aa.png)
@@ -70,24 +70,25 @@ Through [Github](https://github.com/Darrellsrz/Mortgage-Loan-Calculator) :
 
 ![image](https://user-images.githubusercontent.com/88546228/129464738-95f7f3be-a8d6-462d-84b7-b89035f1b6d7.png)
 
-5. After you had exported the file , open the excel file through file explorer 
+5. After you had exported the file , **open the excel file through file explorer** 
 >![image](https://user-images.githubusercontent.com/88546228/129464940-e0a5a3f7-8c7b-4ee4-98e3-fbfdbd2ada55.png)
 
 >![image](https://user-images.githubusercontent.com/88546228/129464964-788197e2-e2bc-4ada-b71b-724c00f89983.png)
 
-6. If you want to calculate another loan , just simply press the reset button and input other data you want.
+6. If you want to calculate another loan , just simply press the **reset button** and input other data you want.
 
 ![image](https://user-images.githubusercontent.com/88546228/129464985-2de97573-2050-453e-8fae-0a6d9d36e885.png)
 
-7. If you want to exit the program , you can either press the exit button or the exit on the right top part 
+7. If you want to exit the program , you can either press the **exit button** or the exit on the right top part 
+
 >![image](https://user-images.githubusercontent.com/88546228/129465010-f4acab91-6a38-4b7c-9f5a-23e866bfc397.png)
 
 >![image](https://user-images.githubusercontent.com/88546228/129465013-cb3e43e0-ab72-4db4-a746-0a3da59b8443.png)
 
 ## Further Information 
-If you want to know about the details of the program , press the internet button.It will bring you to a website for further information 
+If you want to know about the details of the program , press the **internet button**.It will bring you to a website for further information 
 
-![image](https://user-images.githubusercontent.com/88546228/129465045-d01084e0-0068-4165-bbf3-e2adedaaad93.png)
+>![image](https://user-images.githubusercontent.com/88546228/129465045-d01084e0-0068-4165-bbf3-e2adedaaad93.png)
 
 
 
