@@ -187,10 +187,12 @@ def function_export() :
             'Balance': Balance_list
     })
     filename = filedialog.asksaveasfilename()
-    excel.to_excel(filename + ".xlsx", index=False)    
+    excel.to_excel(filename + ".xlsx", index=False)
+    reset()
     exportclick = False
 
-def button_reset() :
+def reset() :
+    global reset
     #reset the functionality of the button 
     Loanpy.configure(state=NORMAL)
     Dppy.configure(state=NORMAL)
@@ -289,7 +291,7 @@ btncalculate = PhotoImage(file=search('Calculate_button.png'))
 button_calculate=Button(root,image=btncalculate,command=button_clicked,style="bordercancel.TLabel")
 button_calculate.place(x=300,y=170)
 
-button_reset=Button(root,text="Reset",style='Accentbutton',command=button_reset)
+button_reset=Button(root,text="Reset",style='Accentbutton',command=reset)
 button_reset.place(x=300,y=110)
 
 button_exit=Button(root,text="Exit",style='Accentbutton',command=on_closing)
@@ -331,9 +333,9 @@ root.mainloop()
 
 
 
+
             
  
     
 
   
-
