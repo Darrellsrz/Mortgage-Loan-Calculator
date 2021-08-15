@@ -1,15 +1,23 @@
+# Name : Siow Run Ze
+# Kelas : 3 Red
+# Guru : Pn.Lai
+#import module and python features from system shell or command prompt
 import tkinter 
-import os
 from tkinter import*
 from tkinter.ttk import*
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import filedialog
 import pandas as pd
 import time
 import webbrowser
-
-
+from PIL import Image
+from pathlib import Path 
+exportclick=True
+firstclick=True
 # date and time
+def search(path:str)-> Path : 
+    return Path("./assets")/Path(path)
 def clock():
         hour=time.strftime("%I")
         minute=time.strftime("%M")
@@ -18,7 +26,7 @@ def clock():
         month=time.strftime("%b")
         am_pm = time.strftime("%p")
         time_zone=time.strftime("%Z")
-        digital.config(text=" "+hour + ":" + minute + ":" + second+" "+am_pm+"\n"+month+" "+day)
+        digital.config(text="   "+hour + ":" + minute + ":" + second+" "+am_pm+"\n"+month+" "+day )
         digital.after(1000,clock)
 
 
@@ -31,21 +39,21 @@ def checkresult():
             messagebox.showerror('Invalid input',"No negatif value or Zero Loan Amount")
             LoanUI.set(" ")
             Loanpy.state(["invalid"])
-            print(entry.state())
-            Loanpy.focus()
+            print(Loanpy.state())
+            
             
        elif Loan >=1000000000 :
-            messagebox.showerror('Invalid input',"Please input the Loan less than RM 1 Million")
+            messagebox.showerror('Invalid input',"Please input the Loan less than RM 100 Million")
             LoanUI.set(" ")
             Loanpy.state(["invalid"])
-            print(entry.state())
-            Loanpy.focus()
+            print(Loanpy.state())
+            
     except ValueError:    
             messagebox.showerror('Invalid Input',"Please input only number for Loan Amount")
             LoanUI.set(" ")
             Loanpy.state(["invalid"])
-            print(entry.state())
-            Loanpy.focus()
+            print(Loanpy.state())
+            
             
     Dp=str(DpUI.get())
     try :
@@ -54,20 +62,20 @@ def checkresult():
             messagebox.showerror('Invalid input',"No negatif value or Zero Down Payment")
             DpUI.set(" ")
             Dppy.state(["invalid"])
-            print(entry.state())
-            Dppy.focus()
+            print(Dppy.state())
+            
         elif Dp>=100 :
             messagebox.showerror('Invalid input',"Please input the down payment less than 100%")
             DpUI.set(" ")
             Dppy.state(["invalid"])
-            print(entry.state())
-            Dppy.focus()
+            print(Dppy.state())
+            
     except ValueError:    
             messagebox.showerror('Invalid Input',"Please input only number for Down Payment ")
             DpUI.set(" ")
             Dppy.state(["invalid"])
-            print(entry.state())
-            Dppy.focus()
+            print(Dppy.state())
+            
     Interest=str(InterestUI.get())
     try :
         Interest=float(Interest)
@@ -75,46 +83,44 @@ def checkresult():
             messagebox.showerror('Invalid input',"No negatif value or Zero Interest Rate")
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
-            print(entry.state())
-            Interestpy.focus()
+            print(Interestpy.state())
+
         elif Interest>=100 :
             messagebox.showerror('Invalid input',"Please input the interest rate less than 100%")
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
-            print(entry.state())
-            Interestpy.focus()
+            print(Interestpy.state())
+            
     except ValueError:    
             messagebox.showerror('Invalid Input',"Please input only number for Interest Rate")
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
-            print(entry.state())
-            Interestpy.focus()
+            print(Interestpy.state())
+            
     year=str(yearUI.get())
     try :
         year=float(year)
         if year<=0 :
             messagebox.showerror('Invalid input',"No negatif value or Zero Year ")
-            YearUI.set(" ")
+            yearUI.set(" ")
             Yearpy.state(["invalid"])
-            print(entry.state())
-            Yearpy.focus
+            print(Yearpy.state())
+        
         elif year >= 200 :
             messagebox.showerror('Invalid Input',"Please input the year below 200 years to avoid error")
             yearUI.set(" ")
             Yearpy.state(["invalid"])
-            print(entry.state())
-            Yearpy.focus()
+            print(Yearpy.state())
+            
     except ValueError :
         messagebox.showerror('Invalid Input',"Please input only number for year")
         yearUI.set(" ")
         Yearpy.state(["invalid"])
-        print(entry.state())
-        Yearpy.focus()
+        print(Yearpy.state())
             
-
-    
+   
 def button_clicked():
-    global LoanUI,DpUI,InterestUI,yearUI,MR,scrollbar,checkresult,Period_list,Principle_list,Interest_list,Balance_list,total_loan,button_export,total_int
+    global LoanUI,DpUI,InterestUI,yearUI,MR,scrollbar,checkresult,Period_list,Principle_list,Interest_list,Balance_list,total_loan,button_export,total_int,firstclick,exportclick
     
     checkresult()
     Loan=str(LoanUI.get())
@@ -153,6 +159,7 @@ def button_clicked():
                      values = (Period_list[a], Principle_list[a], Interest_list[a], Balance_list[a]),tags=("odd",))
         tree.tag_configure("even",foreground="black",background="#D6EAF8")
         tree.tag_configure("odd",foreground="black",background="#EAFAF1")
+
     total_int=(float(mr)*(12*float(year)))-total_loan
     tree.insert(values=('Total',format(total_loan,"0.2f"),format(total_int,"0.2f"),' '), tags=("total"),parent='', index='end', iid=a+1, text="")
     tree.tag_configure("total",foreground="black",background="#839192")
@@ -162,7 +169,8 @@ def button_clicked():
     Dppy.configure(state=DISABLED)
     Interestpy.configure(state=DISABLED)
     Yearpy.configure(state=DISABLED)
-    
+    firstclick=False
+    exportclick=True
     # show the export button
     button_export.place(x=635,y=490,width=156,height=121)
 
@@ -180,7 +188,7 @@ def function_export() :
     })
     filename = filedialog.asksaveasfilename()
     excel.to_excel(filename + ".xlsx", index=False)    
-
+    exportclick = False
 
 def button_reset() :
     #reset the functionality of the button 
@@ -198,25 +206,39 @@ def button_reset() :
     Mr = Label(root,text="             ")
     Mr.place(x=130,y=225)
     button_export.place_forget()
+    exportclick=True
 
+def on_closing():
+    global button_export,firstclick,exportclick 
+    if firstclick == True or exportclick == True :
+        root.after_cancel(digital)
+        root.destroy()
+    else :  
+        quit=messagebox.askyesnocancel("Quit","Do you want to generate the excel file before quit ?") 
+        if quit == True :
+            function_export()
+            root.destroy()
+        elif quit == False :
+            digital.destroy()
+            root.destroy()
 ##MAIN PROGRAM
 
 #basic set for the user interface
 root=Tk()
 root.title("Mortgage Loan Calculator")
-root.geometry("910x625")
-root.maxsize (910,625)
-root.minsize (910,625)
-root.iconbitmap('C:/Users/Siow/Documents/Run Ze/Ask Form 3/Coding Python/Mortgage Loan GUI/finance.ico')
+root.geometry("920x625")
+root.maxsize (920,625)
+root.minsize (920,625)
+root.tk.call('wm', 'iconbitmap', root._w, 'home.ico')
+root.iconbitmap("home.ico")
 
 # theme for gui
 style = ttk.Style(root)
 root.tk.call('source', 'theme/azure dark/azure dark.tcl')
 style.theme_use('azure')
-
     
 digital = Label(root,text=" ",font=("DS-Digital",48) , foreground ="white",background="#333333")
-digital.place (x=550,y=10)
+digital.place (x=535,y=10)
 clock()
 
 #input
@@ -232,10 +254,12 @@ LoanUI=StringVar()
 DpUI=StringVar()
 InterestUI=StringVar()
 yearUI=StringVar()
+
 Loanpy = Entry(root,textvariable=LoanUI)
 Dppy = Entry(root,textvariable=DpUI)
 Interestpy = Entry(root,textvariable=InterestUI)
 Yearpy=Entry(root,textvariable=yearUI)
+
 Loanpy.place(x=130,y=50)
 Dppy.place(x=130,y=90)
 Interestpy.place(x=130,y=130)
@@ -245,30 +269,30 @@ Yearpy.place(x=130,y=170)
 style = ttk.Style()
 style.configure("bordercancel.TLabel", background="#E7B88D",borderwidth= 0)
 #button
-imgexport = PhotoImage(file="Excel1.png")
+imgexport = PhotoImage(file=search("Excel1.png"))
 
 button_export=Button(root,image=imgexport,style="bordercancel.TLabel",command=function_export)
 button_export.place_forget()
 
 imgFrame = Frame(root, width=350, height=350)
-img1 = PhotoImage(file=("HLimg3.png"))
+img1 = PhotoImage(file=search("HLimg3.png"))
 imgFrame.place(x=550, y=125)
 lbl = Label(imgFrame, image=img1)
 lbl.place(x=0,y=0)
 
-imghelp=PhotoImage(file="Web2.png")
+imghelp=PhotoImage(file=("web3.png"))
 btnhelp=Button(root,image=imghelp,style="bordercancel.TLabel")
 btnhelp.place(x=430,y=10)
 btnhelp.bind("<Button-1>", lambda e:webbrowser.open_new_tab('https://github.com/Darrellsrz/Mortgage-Loan-Calculator'))
 
-btncalculate = PhotoImage(file=('Calculate_button.png'))
+btncalculate = PhotoImage(file=search('Calculate_button.png'))
 button_calculate=Button(root,image=btncalculate,command=button_clicked,style="bordercancel.TLabel")
 button_calculate.place(x=300,y=170)
 
 button_reset=Button(root,text="Reset",style='Accentbutton',command=button_reset)
 button_reset.place(x=300,y=110)
 
-button_exit=Button(root,text="Exit",style='Accentbutton',command=root.destroy)
+button_exit=Button(root,text="Exit",style='Accentbutton',command=on_closing)
 button_exit.place(x=300,y=70)
 
 
@@ -302,7 +326,14 @@ tree.heading("Interest", text = "Interest ", anchor = CENTER)
 tree.heading("Balance", text = "Balance ", anchor = CENTER)
 # Configure Scrollbar
 tree_scroll.config(command=tree.yview)
-
-
+root.protocol("WM_DELETE_WINDOW", on_closing)
 root.mainloop()
+
+
+
+            
+ 
+    
+
+  
 
