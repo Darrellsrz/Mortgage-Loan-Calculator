@@ -12,9 +12,12 @@ import pandas as pd
 import time
 import webbrowser
 from PIL import Image
-from pathlib import Path 
+from pathlib import Path
+#set variable
 exportclick=True
 firstclick=True
+check = 0
+
 # date and time
 def search(path:str)-> Path : 
     return Path("./assets")/Path(path)
@@ -31,7 +34,8 @@ def clock():
 
 
 def checkresult():
-    global LoanUI , DpUI,InterestUI,yearUI,MR,scrollbar
+    global MR,scrollbar,error,check,Loan,Dp,Interest,year
+
     Loan=str(LoanUI.get())
     try :
        Loan=float(Loan)
@@ -40,19 +44,23 @@ def checkresult():
             LoanUI.set(" ")
             Loanpy.state(["invalid"])
             print(Loanpy.state())
-            
+            return
             
        elif Loan >=1000000000 :
             messagebox.showerror('Invalid input',"Please input the Loan less than RM 100 Million")
             LoanUI.set(" ")
             Loanpy.state(["invalid"])
             print(Loanpy.state())
-            
+            return
+
     except ValueError:    
-            messagebox.showerror('Invalid Input',"Please input only number for Loan Amount")
-            LoanUI.set(" ")
-            Loanpy.state(["invalid"])
-            print(Loanpy.state())
+        messagebox.showerror('Invalid Input',"Please input only number for Loan Amount")
+        LoanUI.set(" ")
+        Loanpy.state(["invalid"])
+        print(Loanpy.state())
+
+    else :
+        check = check + 1
             
             
     Dp=str(DpUI.get())
@@ -63,18 +71,22 @@ def checkresult():
             DpUI.set(" ")
             Dppy.state(["invalid"])
             print(Dppy.state())
-            
+            return 
+
         elif Dp>=100 :
             messagebox.showerror('Invalid input',"Please input the down payment less than 100%")
             DpUI.set(" ")
             Dppy.state(["invalid"])
             print(Dppy.state())
+            return
             
     except ValueError:    
             messagebox.showerror('Invalid Input',"Please input only number for Down Payment ")
             DpUI.set(" ")
             Dppy.state(["invalid"])
             print(Dppy.state())
+    else : 
+        check = check + 1
             
     Interest=str(InterestUI.get())
     try :
@@ -84,19 +96,21 @@ def checkresult():
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
             print(Interestpy.state())
-
+            return
         elif Interest>=100 :
             messagebox.showerror('Invalid input',"Please input the interest rate less than 100%")
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
             print(Interestpy.state())
-            
+            return
     except ValueError:    
             messagebox.showerror('Invalid Input',"Please input only number for Interest Rate")
             InterestUI.set(" ")
             Interestpy.state(["invalid"])
             print(Interestpy.state())
-            
+    else : 
+        check = check + 1
+
     year=str(yearUI.get())
     try :
         year=float(year)
@@ -117,40 +131,38 @@ def checkresult():
         yearUI.set(" ")
         Yearpy.state(["invalid"])
         print(Yearpy.state())
-            
-   
-def button_clicked():
-    global LoanUI,DpUI,InterestUI,yearUI,MR,scrollbar,checkresult,Period_list,Principle_list,Interest_list,Balance_list,total_loan,button_export,total_int,firstclick,exportclick
-    
-    checkresult()
-    Loan=str(LoanUI.get())
-    Dp=str(DpUI.get())
-    Interest=str(InterestUI.get())
-    year=str(yearUI.get())
-    
+    else : 
+        check = check + 1
+    #Ensure the data input are correct and run the function calculation
+    if check > 3 :
+        calculation()
+def calculation() :
+    global checkresult,Period_list,Principle_list,Interest_list,Balance_list,total_loan,button_export,total_int,firstclick,exportclick,Loan,Dp,Interest,year
     Period_list = []
     Principle_list=[]
     Interest_list=[]
     Balance_list=[]
-    Loan=float(Loan)
-    x=((1+float(Interest)/100/12)**(-12*float(year)))
-    Loan=float(Loan)*((100-float(Dp))/100)
-    mr=((float(Loan)*(float(Interest)/100/12))/(1-float(x)))
+    #Formula for monthly repayment
+    x=((1+Interest/100/12)**(-12*(year)))
+    Loan=(Loan)*((100-(Dp))/100)
+    mr=(((Loan)*((Interest)/100/12))/(1-(x)))
+    
     total_loan=float(Loan)
-    total_m=float(year)*12
+    total_m=(year)*12
     
     Label(root,text=format(mr,".2f")).place(x=130,y=225)
-    # print out the analysis
+    #Calculation for monthly interest,principle and balance .Add them into the lists for treeview
     for a in range(int(total_m)):
         Period_list.append(a+1)
-        monthly_int=float(Loan)*(float(Interest)/12/100)
+        monthly_int=(Loan)*((Interest)/12/100)
         Interest_list.append(format(monthly_int,".2f"))
-        principle=float(mr)-monthly_int
+        principle=(mr)-monthly_int
         Principle_list.append(format(principle,".2f"))
-        Loan=float(Loan)-principle
+        Loan=(Loan)-principle
         if Loan<0 :
             Loan=0
         Balance_list.append(format(Loan,".2f"))
+        # print out the analysis
         if a % 2 == 0 :
             tree.insert(parent = '', index = 'end', iid = a, text = "parent",
                      values = (Period_list[a], Principle_list[a], Interest_list[a], Balance_list[a]),tags=("even",))
@@ -159,8 +171,8 @@ def button_clicked():
                      values = (Period_list[a], Principle_list[a], Interest_list[a], Balance_list[a]),tags=("odd",))
         tree.tag_configure("even",foreground="black",background="#D6EAF8")
         tree.tag_configure("odd",foreground="black",background="#EAFAF1")
-
-    total_int=(float(mr)*(12*float(year)))-total_loan
+    #Calculation for total interest
+    total_int=((mr)*(12*(year)))-total_loan
     tree.insert(values=('Total',format(total_loan,"0.2f"),format(total_int,"0.2f"),' '), tags=("total"),parent='', index='end', iid=a+1, text="")
     tree.tag_configure("total",foreground="black",background="#839192")
     
@@ -170,10 +182,11 @@ def button_clicked():
     Interestpy.configure(state=DISABLED)
     Yearpy.configure(state=DISABLED)
     firstclick=False
-    exportclick=True
+    exportclick=False
     # show the export button
     button_export.place(x=635,y=490,width=156,height=121)
 
+#Export the into excel file type
 def function_export() :
     global Period_list,Principle_list,Interest_list,Balance_list,total_loan,total_int
     Period_list.append("      Total :")
@@ -189,36 +202,41 @@ def function_export() :
     filename = filedialog.asksaveasfilename()
     excel.to_excel(filename + ".xlsx", index=False)
     reset()
-    exportclick = False
+    exportclick = True
 
 def reset() :
-    global reset
+    global reset,firstclick,exportclick,check
     #reset the functionality of the button 
+    check = 0
     Loanpy.configure(state=NORMAL)
     Dppy.configure(state=NORMAL)
     Interestpy.configure(state=NORMAL)
     Yearpy.configure(state=NORMAL)
-
+    #Delete the text in the input box 
     Loanpy.delete(0,END)
     Dppy.delete(0,END)
     Interestpy.delete(0,END)
     Yearpy.delete(0,END)
+    #Delete the data in the treeview table
     for i in tree.get_children():
         tree.delete(i)
     Mr = Label(root,text="             ")
     Mr.place(x=130,y=225)
     button_export.place_forget()
+    firstclick=True
     exportclick=True
 
+#Close the program
 def on_closing():
     global button_export,firstclick,exportclick 
     if firstclick == True or exportclick == True :
-        root.after_cancel(digital)
+        digital.destroy()
         root.destroy()
     else :  
         quit=messagebox.askyesnocancel("Quit","Do you want to generate the excel file before quit ?") 
         if quit == True :
             function_export()
+            digital.destroy()
             root.destroy()
         elif quit == False :
             digital.destroy()
@@ -231,8 +249,8 @@ root.title("Mortgage Loan Calculator")
 root.geometry("920x625")
 root.maxsize (920,625)
 root.minsize (920,625)
-root.tk.call('wm', 'iconbitmap', root._w, 'home.ico')
-root.iconbitmap("home.ico")
+icon = PhotoImage(file = "home.png")
+root.iconphoto(False,icon)
 
 # theme for gui
 style = ttk.Style(root)
@@ -257,7 +275,7 @@ DpUI=StringVar()
 InterestUI=StringVar()
 yearUI=StringVar()
 
-Loanpy = Entry(root,textvariable=LoanUI)
+Loanpy =Entry(root,textvariable=LoanUI)
 Dppy = Entry(root,textvariable=DpUI)
 Interestpy = Entry(root,textvariable=InterestUI)
 Yearpy=Entry(root,textvariable=yearUI)
@@ -272,7 +290,7 @@ style = ttk.Style()
 style.configure("bordercancel.TLabel", background="#E7B88D",borderwidth= 0)
 #button
 imgexport = PhotoImage(file=search("Excel1.png"))
-
+#export button
 button_export=Button(root,image=imgexport,style="bordercancel.TLabel",command=function_export)
 button_export.place_forget()
 
@@ -282,18 +300,22 @@ imgFrame.place(x=550, y=125)
 lbl = Label(imgFrame, image=img1)
 lbl.place(x=0,y=0)
 
+#button help to webpage
 imghelp=PhotoImage(file=("web3.png"))
 btnhelp=Button(root,image=imghelp,style="bordercancel.TLabel")
 btnhelp.place(x=430,y=10)
 btnhelp.bind("<Button-1>", lambda e:webbrowser.open_new_tab('https://github.com/Darrellsrz/Mortgage-Loan-Calculator'))
 
+#button calculate
 btncalculate = PhotoImage(file=search('Calculate_button.png'))
-button_calculate=Button(root,image=btncalculate,command=button_clicked,style="bordercancel.TLabel")
+button_calculate=Button(root,image=btncalculate,command=checkresult,style="bordercancel.TLabel")
 button_calculate.place(x=300,y=170)
 
+#button reset
 button_reset=Button(root,text="Reset",style='Accentbutton',command=reset)
 button_reset.place(x=300,y=110)
 
+#button_exit
 button_exit=Button(root,text="Exit",style='Accentbutton',command=on_closing)
 button_exit.place(x=300,y=70)
 
